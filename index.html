@@ -87,7 +87,9 @@ button {
 
     <p id="status">Not connected</p>
 
-    <p class="small">Sometimes the connection may fail.</p>
+    <p class="small">
+      Do not change the website while connecting, or it will fail.
+    </p>
   </div>
 </div>
 
@@ -96,7 +98,7 @@ button {
 </audio>
 
 <audio id="failSound" preload="auto">
-  <source src="Dialupfail.mp2.m4a" type="audio/mp4">
+  <source src="Dialupfail.mp3.m4a" type="audio/mp4">
 </audio>
 
 <script>
@@ -104,19 +106,25 @@ function connect() {
   const status = document.getElementById("status");
   const sound = document.getElementById("dialup");
   const failSound = document.getElementById("failSound");
+  const urlBox = document.getElementById("url");
 
-  let url = document.getElementById("url").value.trim();
+  let typedWebsite = urlBox.value.trim();
 
-  if (url === "") {
+  if (typedWebsite === "") {
     status.textContent = "Please type a website first.";
     return;
   }
+
+  const originalText = urlBox.value;
+
+  let url = typedWebsite;
 
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
     url = "https://" + url;
   }
 
-  const failed = Math.random() < 0.30;
+  const randomFail = Math.random() < 0.30;
+  let cancelled = false;
 
   sound.pause();
   sound.currentTime = 0;
@@ -130,24 +138,43 @@ function connect() {
     status.textContent = "Tap Connect again to allow sound.";
   });
 
+  const watcher = setInterval(function() {
+    if (urlBox.value !== originalText) {
+      cancelled = true;
+      clearInterval(watcher);
+
+      sound.pause();
+      sound.currentTime = 0;
+
+      status.textContent = "❌ Connection failed. Website was changed.";
+
+      failSound.currentTime = 0;
+      failSound.play().catch(function() {});
+    }
+  }, 100);
+
   setTimeout(function() {
-    status.textContent = "Checking username and password...";
+    if (!cancelled) status.textContent = "Checking username and password...";
   }, 5000);
 
   setTimeout(function() {
-    status.textContent = "Verifying connection...";
+    if (!cancelled) status.textContent = "Verifying connection...";
   }, 10000);
 
   setTimeout(function() {
-    status.textContent = "Negotiating connection...";
+    if (!cancelled) status.textContent = "Negotiating connection...";
   }, 15000);
 
   setTimeout(function() {
-    status.textContent = "Connecting at 56.0 Kbps...";
+    if (!cancelled) status.textContent = "Connecting at 56.0 Kbps...";
   }, 20000);
 
   sound.onended = function() {
-    if (failed) {
+    clearInterval(watcher);
+
+    if (cancelled) return;
+
+    if (randomFail) {
       const errors = [
         "No dial tone.",
         "Line busy.",
@@ -157,7 +184,8 @@ function connect() {
         "Error 678: Remote computer did not respond."
       ];
 
-      status.textContent = "😵 " + errors[Math.floor(Math.random() * errors.length)];
+      status.textContent =
+        "❌ " + errors[Math.floor(Math.random() * errors.length)];
 
       failSound.currentTime = 0;
       failSound.play().catch(function() {});
@@ -165,7 +193,7 @@ function connect() {
       return;
     }
 
-    status.textContent = "🛜 Connected!";
+    status.textContent = "✅ Connected!";
     window.location.href = url;
   };
 }
