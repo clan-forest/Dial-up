@@ -15,7 +15,6 @@ body {
 
 h1 {
   margin-top: 30px;
-  font-size: 42px;
 }
 
 .window {
@@ -60,7 +59,7 @@ button {
 #status {
   margin-top: 15px;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .small {
@@ -88,9 +87,7 @@ button {
 
     <p id="status">Not connected</p>
 
-    <p class="small">
-      The website will open after the dial-up sound finishes.
-    </p>
+    <p class="small">Sometimes the connection may fail.</p>
   </div>
 </div>
 
@@ -98,10 +95,15 @@ button {
   <source src="dialup.mp3.m4a" type="audio/mp4">
 </audio>
 
+<audio id="failSound" preload="auto">
+  <source src="Dialupfail.mp3.m4a" type="audio/mp4">
+</audio>
+
 <script>
 function connect() {
   const status = document.getElementById("status");
   const sound = document.getElementById("dialup");
+  const failSound = document.getElementById("failSound");
 
   let url = document.getElementById("url").value.trim();
 
@@ -114,8 +116,13 @@ function connect() {
     url = "https://" + url;
   }
 
+  const failed = Math.random() < 0.30;
+
   sound.pause();
   sound.currentTime = 0;
+
+  failSound.pause();
+  failSound.currentTime = 0;
 
   status.textContent = "Dialing...";
 
@@ -132,11 +139,33 @@ function connect() {
   }, 10000);
 
   setTimeout(function() {
+    status.textContent = "Negotiating connection...";
+  }, 15000);
+
+  setTimeout(function() {
     status.textContent = "Connecting at 56.0 Kbps...";
-  }, 17000);
+  }, 20000);
 
   sound.onended = function() {
-    status.textContent = "Connected!";
+    if (failed) {
+      const errors = [
+        "No dial tone.",
+        "Line busy.",
+        "Remote computer did not answer.",
+        "Connection timed out.",
+        "Modem lost carrier.",
+        "Error 678: Remote computer did not respond."
+      ];
+
+      status.textContent = "😵 " + errors[Math.floor(Math.random() * errors.length)];
+
+      failSound.currentTime = 0;
+      failSound.play().catch(function() {});
+
+      return;
+    }
+
+    status.textContent = "🛜 Connected!";
     window.location.href = url;
   };
 }
