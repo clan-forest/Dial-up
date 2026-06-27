@@ -2,70 +2,20 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌐Dial-Up Browser</title>
+<title>Dial-Up Browser</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(#3a6ea5, #1f3f73);
-  color: white;
-  text-align: center;
-}
-
-h1 {
-  margin-top: 30px;
-}
-
-.window {
-  margin: 40px auto;
-  width: 90%;
-  max-width: 420px;
-  background: #ece9d8;
-  color: black;
-  border: 3px solid #245edb;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.title {
-  background: linear-gradient(#2b77e5, #1747a8);
-  color: white;
-  padding: 10px;
-  font-weight: bold;
-  text-align: left;
-}
-
-.content {
-  padding: 20px;
-}
-
-input {
-  width: 90%;
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-button {
-  padding: 12px 25px;
-  font-size: 16px;
-  background: #0b63ce;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-#status {
-  margin-top: 15px;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.small {
-  font-size: 14px;
-  color: #333;
-}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#3a6ea5,#1f3f73);color:white;text-align:center}
+h1{margin-top:25px}
+.window{margin:30px auto;width:90%;max-width:430px;background:#ece9d8;color:black;border:3px solid #245edb;border-radius:8px;overflow:hidden}
+.title{background:linear-gradient(#2b77e5,#1747a8);color:white;padding:10px;font-weight:bold;text-align:left}
+.content{padding:20px}
+input{width:90%;padding:12px;font-size:16px;margin-bottom:10px}
+button{padding:12px 18px;font-size:16px;background:#0b63ce;color:white;border:none;border-radius:5px;margin:4px}
+#status{margin-top:15px;font-weight:bold;font-size:18px}
+.small{font-size:14px;color:#333}
+#reader{display:none;margin:15px auto;width:300px}
 </style>
 </head>
 
@@ -77,13 +27,16 @@ button {
   <div class="title">Connect to the Internet</div>
 
   <div class="content">
-    <p>Enter a website:</p>
+    <p>Enter a website or scan a QR code:</p>
 
     <input id="url" placeholder="example.com">
 
     <br>
 
     <button onclick="connect()">Connect</button>
+    <button onclick="startQR()">📷 Scan QR</button>
+
+    <div id="reader"></div>
 
     <p id="status">Not connected</p>
 
@@ -102,6 +55,8 @@ button {
 </audio>
 
 <script>
+let qrScanner = null;
+
 function connect() {
   const status = document.getElementById("status");
   const sound = document.getElementById("dialup");
@@ -111,7 +66,7 @@ function connect() {
   let typedWebsite = urlBox.value.trim();
 
   if (typedWebsite === "") {
-    status.textContent = "Please type a website first.";
+    status.textContent = "Please type or scan a website first.";
     return;
   }
 
@@ -123,7 +78,7 @@ function connect() {
     url = "https://" + url;
   }
 
-  const randomFail = Math.random() < 0.30;
+  const randomFail = Math.random() < 0.10;
   let cancelled = false;
 
   sound.pause();
@@ -189,13 +144,44 @@ function connect() {
 
       failSound.currentTime = 0;
       failSound.play().catch(function() {});
-
       return;
     }
 
     status.textContent = "🛜 Connected!";
     window.location.href = url;
   };
+}
+
+function startQR() {
+  const reader = document.getElementById("reader");
+  const status = document.getElementById("status");
+
+  reader.style.display = "block";
+  status.textContent = "Point camera at a QR code...";
+
+  if (qrScanner) {
+    qrScanner.clear();
+  }
+
+  qrScanner = new Html5Qrcode("reader");
+
+  qrScanner.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: 220
+    },
+    function(decodedText) {
+      document.getElementById("url").value = decodedText;
+      status.textContent = "🛜 QR code scanned! Press Connect.";
+
+      qrScanner.stop();
+      reader.style.display = "none";
+    },
+    function(error) {}
+  ).catch(function() {
+    status.textContent = "Camera could not start.";
+  });
 }
 </script>
 
