@@ -1,133 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dial-Up Browser</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(#3a6ea5, #1f3f73);
-      color: white;
-      text-align: center;
-    }
-
-    .window {
-      margin: 40px auto;
-      width: 90%;
-      max-width: 420px;
-      background: #ece9d8;
-      color: black;
-      border: 3px solid #245edb;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .title {
-      background: linear-gradient(#2b77e5, #1747a8);
-      color: white;
-      padding: 10px;
-      font-weight: bold;
-      text-align: left;
-    }
-
-    .content {
-      padding: 20px;
-    }
-
-    input {
-      width: 90%;
-      padding: 12px;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      background: #0b63ce;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    #status {
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    iframe {
-      width: 100%;
-      height: 60vh;
-      border: none;
-      background: white;
-      display: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dial-Up Browser</title>
+<style>
+body{
+    margin:0;
+    font-family:Tahoma,Arial,sans-serif;
+    background:#3a6ea5;
+    background:linear-gradient(#3a6ea5,#1f3f73);
+}
+h1{
+    color:white;
+    text-align:center;
+    margin-top:20px;
+}
+.window{
+    width:90%;
+    max-width:430px;
+    margin:30px auto;
+    background:#ece9d8;
+    border:3px solid #245edb;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 0 15px rgba(0,0,0,.4);
+}
+.titlebar{
+    background:linear-gradient(#2b77e5,#1747a8);
+    color:white;
+    padding:10px;
+    font-weight:bold;
+}
+.content{
+    padding:20px;
+    text-align:center;
+}
+input{
+    width:90%;
+    padding:12px;
+    font-size:16px;
+    margin-bottom:12px;
+}
+button{
+    padding:12px 24px;
+    font-size:16px;
+    cursor:pointer;
+    background:#0b63ce;
+    color:white;
+    border:none;
+    border-radius:5px;
+}
+button:hover{
+    background:#0d73ef;
+}
+#status{
+    margin-top:18px;
+    font-weight:bold;
+    color:#004080;
+}
+iframe{
+    display:none;
+    width:100%;
+    height:65vh;
+    border:none;
+    background:white;
+}
+</style>
 </head>
 <body>
-
-  <h1>📞 Dial-Up Browser</h1>
-
-  <div class="window">
-    <div class="title">Connect to the Internet</div>
-
-    <div class="content">
-      <p>Enter a website:</p>
-
-      <input id="url" placeholder="example.com">
-
-      <br>
-
-      <button onclick="connect()">Connect</button>
-
-      <p id="status">Not connected</p>
-    </div>
-  </div>
-
-  <iframe id="browser"></iframe>
-
-  <audio id="dialup" src="dialup.mp3"></audio>
-
-  <script>
-    function connect() {
-      const status = document.getElementById("status");
-      const sound = document.getElementById("dialup");
-      const browser = document.getElementById("browser");
-
-      let url = document.getElementById("url").value.trim();
-
-      if (url === "") {
-        status.textContent = "Please type a website first.";
-        return;
-      }
-
-      if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        url = "https://" + url;
-      }
-
-      browser.style.display = "none";
-
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
-
-      status.textContent = "Dialing...";
-
-      setTimeout(() => {
-        status.textContent = "Checking username and password...";
-      }, 2500);
-
-      setTimeout(() => {
-        status.textContent = "Connecting at 56.0 Kbps...";
-      }, 5000);
-
-      setTimeout(() => {
-        status.textContent = "Connected!";
-        browser.src = url;
-        browser.style.display = "block";
-      }, 7500);
-    }
-  </script>
-
+<h1>📞 Dial-Up Browser</h1>
+<div class="window">
+<div class="titlebar">
+Connect to the Internet
+</div>
+<div class="content">
+<p>Website:</p>
+<input
+id="url"
+type="text"
+placeholder="example.com">
+<br>
+<button onclick="connect()">
+Connect
+</button>
+<p id="status">
+Not connected
+</p>
+</div>
+</div>
+<iframe id="browser"></iframe>
+<!-- Dial-up sound -->
+<audio id="dialup" preload="auto">
+    <source src="dialup.mp3.m4a" type="audio/mp4">
+    Your browser does not support audio.
+</audio>
+<script>
+function connect(){
+const status=document.getElementById("status");
+const browser=document.getElementById("browser");
+const sound=document.getElementById("dialup");
+let url=document.getElementById("url").value.trim();
+if(url===""){
+    status.textContent="Please enter a website.";
+    return;
+}
+if(!url.startsWith("http://") &&
+   !url.startsWith("https://")){
+    url="https://"+url;
+}
+browser.style.display="none";
+sound.pause();
+sound.currentTime=0;
+sound.play().catch(function(){});
+status.textContent="Dialing...";
+setTimeout(function(){
+    status.textContent="Checking username and password...";
+},2500);
+setTimeout(function(){
+    status.textContent="Negotiating connection...";
+},4500);
+setTimeout(function(){
+    status.textContent="Connecting at 56.0 Kbps...";
+},6500);
+setTimeout(function(){
+    status.textContent="Connected!";
+    browser.src=url;
+    browser.style.display="block";
+},9000);
+}
+</script>
 </body>
 </html>
