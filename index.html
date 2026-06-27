@@ -13,6 +13,11 @@ body {
   text-align: center;
 }
 
+h1 {
+  margin-top: 30px;
+  font-size: 42px;
+}
+
 .window {
   margin: 40px auto;
   width: 90%;
@@ -55,14 +60,12 @@ button {
 #status {
   margin-top: 15px;
   font-weight: bold;
+  font-size: 20px;
 }
 
-iframe {
-  width: 100%;
-  height: 60vh;
-  border: none;
-  background: white;
-  display: none;
+.small {
+  font-size: 14px;
+  color: #333;
 }
 </style>
 </head>
@@ -84,10 +87,12 @@ iframe {
     <button onclick="connect()">Connect</button>
 
     <p id="status">Not connected</p>
+
+    <p class="small">
+      The website will open after the dial-up sound finishes.
+    </p>
   </div>
 </div>
-
-<iframe id="browser"></iframe>
 
 <audio id="dialup" preload="auto">
   <source src="dialup.mp3.m4a" type="audio/mp4">
@@ -97,7 +102,6 @@ iframe {
 function connect() {
   const status = document.getElementById("status");
   const sound = document.getElementById("dialup");
-  const browser = document.getElementById("browser");
 
   let url = document.getElementById("url").value.trim();
 
@@ -110,30 +114,31 @@ function connect() {
     url = "https://" + url;
   }
 
-  browser.style.display = "none";
-
+  sound.pause();
   sound.currentTime = 0;
-  sound.play();
 
   status.textContent = "Dialing...";
 
-  setTimeout(() => {
+  sound.play().catch(function() {
+    status.textContent = "Tap Connect again to allow sound.";
+  });
+
+  setTimeout(function() {
     status.textContent = "Checking username and password...";
   }, 5000);
 
-  setTimeout(() => {
+  setTimeout(function() {
     status.textContent = "Verifying connection...";
   }, 10000);
 
-  setTimeout(() => {
+  setTimeout(function() {
     status.textContent = "Connecting at 56.0 Kbps...";
   }, 17000);
 
-  setTimeout(() => {
+  sound.onended = function() {
     status.textContent = "Connected!";
-    browser.src = url;
-    browser.style.display = "block";
-  }, 27421);
+    window.location.href = url;
+  };
 }
 </script>
 
