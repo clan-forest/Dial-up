@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dial-Up Browser</title>
+<title>🌐Dial-Up Browser</title>
 
 <style>
 body {
@@ -94,11 +94,11 @@ button {
 </div>
 
 <audio id="dialup" preload="auto">
-  <source src="dialup.mp3.m4a" type="audio/mp4">
+  <source src="dialup.mp2.m4a" type="audio/mp4">
 </audio>
 
 <audio id="failSound" preload="auto">
-  <source src="Dialupfail.mp3.m4a" type="audio/mp4">
+  <source src="Dialupfail.mp2.m4a" type="audio/mp4">
 </audio>
 
 <script>
@@ -146,7 +146,7 @@ function connect() {
       sound.pause();
       sound.currentTime = 0;
 
-      status.textContent = "❌ Connection failed. Website was changed.";
+      status.textContent = "😵 Connection failed. Website was changed.";
 
       failSound.currentTime = 0;
       failSound.play().catch(function() {});
@@ -185,7 +185,7 @@ function connect() {
       ];
 
       status.textContent =
-        "❌ " + errors[Math.floor(Math.random() * errors.length)];
+        "😵 " + errors[Math.floor(Math.random() * errors.length)];
 
       failSound.currentTime = 0;
       failSound.play().catch(function() {});
@@ -193,7 +193,7 @@ function connect() {
       return;
     }
 
-    status.textContent = "✅ Connected!";
+    status.textContent = "🛜 Connected!";
     window.location.href = url;
   };
 }
