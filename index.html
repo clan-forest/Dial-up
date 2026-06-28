@@ -21,7 +21,7 @@ button{padding:12px 18px;font-size:16px;background:#0b63ce;color:white;border:no
 
 <body>
 
-<h1>📞 Dial-Up Browser</h1>
+<h1>📞 Dial-Up Browser🌐</h1>
 
 <div class="window">
   <div class="title">Connect to the Internet</div>
@@ -55,6 +55,19 @@ button{padding:12px 18px;font-size:16px;background:#0b63ce;color:white;border:no
 </audio>
 
 <script>
+button {
+  background-color: #0A64AD; /* Blue */
+  color: gray;
+  border: 1px solid #003C74;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2B7CD3;
+}
+
 let qrScanner = null;
 
 function connect() {
@@ -147,7 +160,8 @@ function connect() {
       return;
     }
 
-    status.textContent = "🛜 Connected!";
+    status.textContent = "🛜 success
+    !";
     window.location.href = url;
   };
 }
