@@ -6,22 +6,81 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#3a6ea5,#1f3f73);color:white;text-align:center}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(#3a6ea5,#1f3f73);
+  color:white;
+  text-align:center;
+}
+
 h1{margin-top:25px}
-.window{margin:30px auto;width:90%;max-width:430px;background:#ece9d8;color:black;border:3px solid #245edb;border-radius:8px;overflow:hidden}
-.title{background:linear-gradient(#2b77e5,#1747a8);color:white;padding:10px;font-weight:bold;text-align:left}
+
+.window{
+  margin:30px auto;
+  width:90%;
+  max-width:430px;
+  background:#ece9d8;
+  color:black;
+  border:3px solid #245edb;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.title{
+  background:linear-gradient(#2b77e5,#1747a8);
+  color:white;
+  padding:10px;
+  font-weight:bold;
+  text-align:left;
+}
+
 .content{padding:20px}
-input{width:90%;padding:12px;font-size:16px;margin-bottom:10px}
-button{padding:12px 18px;font-size:16px;background:#0b63ce;color:grey;border:none;border-radius:5px;margin:4px}
-#status{margin-top:15px;font-weight:bold;font-size:18px}
-.small{font-size:14px;color:#333}
-#reader{display:none;margin:15px auto;width:300px}
+
+input{
+  width:90%;
+  padding:12px;
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+button{
+  background-color:#0A64AD;
+  color:white;
+  border:1px solid #003C74;
+  padding:10px 20px;
+  border-radius:4px;
+  cursor:pointer;
+  font-size:16px;
+  margin:4px;
+}
+
+button:hover{
+  background-color:#2B7CD3;
+}
+
+#status{
+  margin-top:15px;
+  font-weight:bold;
+  font-size:18px;
+}
+
+.small{
+  font-size:14px;
+  color:#333;
+}
+
+#reader{
+  display:none;
+  margin:15px auto;
+  width:300px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>📞 Dial-Up Browser🌐</h1>
+<h1>📞 Dial-Up Browser 🌐</h1>
 
 <div class="window">
   <div class="title">Connect to the Internet</div>
@@ -33,7 +92,7 @@ button{padding:12px 18px;font-size:16px;background:#0b63ce;color:grey;border:non
 
     <br>
 
-    <button onclick="connect()"> dial </button>
+    <button onclick="connect()">Connect</button>
     <button onclick="startQR()">📷 Scan QR</button>
 
     <div id="reader"></div>
@@ -51,11 +110,10 @@ button{padding:12px 18px;font-size:16px;background:#0b63ce;color:grey;border:non
 </audio>
 
 <audio id="failSound" preload="auto">
-  <source src="Dialupfail.mp2.m4a" type="audio/mp4">
+  <source src="Dialupfail.mp3.m4a" type="audio/mp4">
 </audio>
 
 <script>
-
 let qrScanner = null;
 
 function connect() {
@@ -72,7 +130,6 @@ function connect() {
   }
 
   const originalText = urlBox.value;
-
   let url = typedWebsite;
 
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -148,8 +205,7 @@ function connect() {
       return;
     }
 
-    status.textContent = "🛜 success
-    !";
+    status.textContent = "🛜 Success!";
     window.location.href = url;
   };
 }
